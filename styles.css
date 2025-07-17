@@ -1,0 +1,255 @@
+/* Roboto Font */
+@import url('https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Skranji:wght@400;700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+/* Overpass */
+@import url('https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Skranji:wght@400;700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+
+:root {
+    --navy: #001F3F;
+    --dark-blue: #3A6D8C;
+    --light-blue: #6A9AB0;
+    --beige: #EAD8B1;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.icon {
+    height: 32px;
+    fill: var(--navy);
+}
+
+.hidden {
+    display: none !important;
+}
+
+body {
+    font-family: 'Overpass', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+}
+
+/* Header Styles */
+header {
+    /* background-color: red; */
+    color: var(--navy);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+}
+
+/* Main Styles */
+main {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 1rem;
+    place-content: center;
+    /* justify-content: center; */
+}
+
+.score-board,
+.game-board {
+    width: 100%;
+}
+
+.score-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+}
+
+.score-item {
+    padding: 0.5rem;
+    background-color: var(--dark-blue);
+    border-radius: 5px;
+    overflow: hidden;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.score-item>svg {
+    grid-row: 1 / span 2;
+    grid-column: 2 / 3;
+    place-self: center;
+    fill: #fff;
+    height: 36px;
+}
+
+.score-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #fff;
+}
+
+.score-value {
+    font-size: 1.5rem;
+    color: var(--beige);
+}
+
+.game-info {
+    /* background-color: var(--dark-blue); */
+    color: #fff;
+    border-radius: 5px;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+
+.game-info__player {
+    position: relative;
+    background-color: var(--light-blue);
+    border-radius: 5px;
+    padding: 0.5rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    transition: all 0.3s ease-in-out;
+}
+
+.game-info__player > span {
+    font-size: 0.9rem;
+}
+
+.game-info__player > svg {
+    height: 48px;
+    fill: #fff;
+}
+
+.game-info__player.current {
+    border: 3px solid var(--navy);
+}
+
+.game-info__player.current::after {
+    content: 'Player Turn';
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 0.65rem;
+    background-color: var(--navy);
+    padding: 0.225rem;
+}
+
+.game-info__player.current > svg {
+    fill: var(--beige);
+}
+
+.game-board {
+    padding: 1rem;
+    background-color: var(--dark-blue);
+    border-radius: 8px;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+}
+
+.cell {
+    border: none;
+    background: none;
+
+    border: 3px solid var(--light-blue);
+    background-color: var(--beige);
+    border-radius: 5px;
+    aspect-ratio: 1;
+    transition: all 0.3s ease-in-out;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cell>svg {
+    height: 96px;
+    fill: var(--navy);
+}
+
+.cell.taken {
+    background-color: white;
+}
+
+.cell:hover:not(.taken) {
+    transform: scale(0.9);
+    background-color: var(--light-blue);
+}
+
+.cell.winning {
+    animation: pulse 1s infinite;
+}
+
+.new-game {
+    padding: 0.5rem 1rem;
+    border: none;
+    outline: none;
+    background-color: var(--dark-blue);
+    width: 100%;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+    font-size: 1.1rem;
+    color: #fff;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.new-game > svg {
+    height: 24px;
+    fill: #fff;
+}
+
+
+.new-game:hover {
+    transform: translateY(-0.3rem);
+}
+
+.new-game:hover > svg {
+    animation: spin 1s alternate;
+}
+
+/* Footer Styles */
+footer {
+    padding: 0.8rem;
+    display: flex;
+    gap: 0.3rem;
+    align-items: center;
+    justify-content: center;
+}
+
+footer>.icon {
+    height: 24px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        transform: scale(0.9);
+    }
+
+    50% {
+        transform: scale(1);
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    header {
+        padding: 1rem 20rem;
+    }
+}
