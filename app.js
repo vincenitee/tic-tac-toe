@@ -61,6 +61,7 @@ function createPlayer(name, mark) {
 
 // Main controller of the game
 function GameController() {
+    let scores = {X: 0, O: 0, draw: 0};
 
     let gameOver = false;
     // Initialize board
@@ -80,10 +81,11 @@ function GameController() {
 
     const getActivePlayer = () => activePlayer;
 
-    const printNewRound = () => {
-        board.printBoard();
-        console.log(`${getActivePlayer().name}'s turn`);
-    }
+    const getScores = () => scores;
+
+    const isGameOver = () => gameOver;
+
+    const getBoard = () => board.getBoard();
 
     const playRound = (row, col) => {
         if (!gameOver) {
@@ -97,19 +99,18 @@ function GameController() {
             }
 
             if(isBoardFull() && !checkWinner(row, col)) {
-                console.log(`It's a tie.`);
+                scores['draw'] += 1;
                 gameOver = true;
                 return;
             }
 
             if (checkWinner(row, col)) {
-                console.log(`${getActivePlayer().name} Wins!`)
+                scores[mark] += 10;
                 gameOver = true;
-                return;
+                return activePlayer;
             }
 
             switchActivePlayer();
-            printNewRound();
         }
     };
 
@@ -150,11 +151,12 @@ function GameController() {
             .every(row => row.every(cell => cell.getMark() !== ''));
     }
 
-    printNewRound();
-
     return {
         playRound,
-        getActivePlayer
+        getActivePlayer,
+        getScores,
+        getBoard,
+        isGameOver,
     };
 
 }
@@ -174,36 +176,83 @@ function ScreenController() {
     };
 
     const select = (element) => document.querySelector(element);
-    const selectAll = (element) => document.querySelectorAll(element);
 
     const boardElement = select('.game-board');
+    
+    const playerXScoreElement = select('#player-X-score');
+    const playerOScoreElement = select('#player-O-score');
+    const drawScoreElement = select('#draw-score');
 
-    const gameBoard = Gameboard();
+    const playerXElement = select('#player-x');
+    const playerOElement = select('#player-o');
+
+    const gameController = GameController();
 
     const updateScreen = () => {
-        const board = gameBoard.getBoard();
+        const board = gameController.getBoard();
+        const activePlayer = gameController.getActivePlayer();
+        const isGameOver = gameController.isGameOver();
         
+        if(isGameOver) (activePlayer.mark === 'X' ? playerXElement : playerOElement).classList.add('winner');
+
+        const {X: playerXScore, O: playerOScore, draw: drawScore } = gameController.getScores();
+
+        playerXScoreElement.textContent = playerXScore;
+        playerOScoreElement.textContent = playerOScore;
+        drawScoreElement.textContent = drawScore;
+
+        [playerXElement, playerOElement].forEach(e => e.classList.remove('current'));
+        (activePlayer.mark === 'X' ? playerXElement : playerOElement).classList.add('current');
+
         boardElement.innerHTML = '';
 
+        renderBoard(board);
+    };
+
+    const renderBoard = (board) => {
         board.forEach((row, rowIndex) => {
-            console.log(row);
             row.forEach((cell, collIndex) => {
+                const cellMark = cell.getMark();
+                const isTaken = cellMark !== '';
+
                 const cellElement = document.createElement('button');
                 cellElement.classList.add('cell');
                 cellElement.dataset.row = rowIndex;
                 cellElement.dataset.col = collIndex;
-                cellElement.textContent = cell.getMark();
+                cellElement.innerHTML = isTaken ? marks[cellMark] : '';
+
+                if(isTaken) cellElement.classList.add('taken');
+                
                 boardElement.appendChild(cellElement);
             });
         });
     };
 
+    const clickHandlerBoard = () => {
+        boardElement.addEventListener('click', (event) => {
+            if(!event.target.classList.contains('cell')) return;
+
+            const cell = event.target;
+            const cellRow = parseInt(cell.dataset.row);
+            const cellCol = parseInt(cell.dataset.col);
+
+            gameController.playRound(cellRow, cellCol);
+            updateScreen();
+        });
+
+        updateScreen();
+    };
+
     return {
         updateScreen,
+        clickHandlerBoard
     };
 }
 
-ScreenController().updateScreen();
+(function(){
+    const screenController = ScreenController();
+    screenController.clickHandlerBoard();
+})();
 
 
 

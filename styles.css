@@ -121,25 +121,50 @@ main {
 .game-info__player > svg {
     height: 48px;
     fill: #fff;
+    transition: fill 0.3s ease;
+}
+
+.game-info__player {
+    position: relative; /* Needed for absolute ::after positioning */
+    transition: border 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
 .game-info__player.current {
-    border: 3px solid var(--navy);
+    outline: 3px solid var(--navy);
+    transform: scale(1.02);
+    transition: border 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
 }
 
-.game-info__player.current::after {
-    content: 'Player Turn';
+.game-info__player.current::after,
+.game-info__player.winner::after {
     position: absolute;
     top: 0;
     right: 0;
     font-size: 0.65rem;
-    background-color: var(--navy);
+    color: white;
     padding: 0.225rem;
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    border-radius: 0 0 0 5px;
+    pointer-events: none;
 }
 
-.game-info__player.current > svg {
-    fill: var(--beige);
+.game-info__player.current::after {
+    content: 'Player Turn';
+    background-color: var(--navy);
 }
+
+.game-info__player.winner::after {
+    content: 'Winner';
+}
+
+.game-info__player.current::after,
+.game-info__player.winner::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 
 .game-board {
     padding: 1rem;
@@ -167,7 +192,7 @@ main {
 }
 
 .cell>svg {
-    height: 96px;
+    height: 84px;
     fill: var(--navy);
 }
 
