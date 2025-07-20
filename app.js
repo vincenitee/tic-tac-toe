@@ -171,8 +171,12 @@ function GameController(
     }
 
     const newGame = () => {
+        // Variable resets
+        activePlayer = players[0];
         gameOver = false;
         winner = null;
+
+        // Regenerates the board
         board.generateBoard();
     }
 
@@ -228,11 +232,10 @@ function ScreenController() {
     const gameControlsElement = select('.game-controls');
     const newGameBtn = select('.new-game');
 
-    gameControlsElement.classList.toggle('hidden');
-
     newGameBtn.addEventListener('click', () => {
         game.newGame();
         updateScreen();
+        toggleGameControlsVisibility();
     });
 
     closeDialogBtn.addEventListener('click', () => {
@@ -278,7 +281,13 @@ function ScreenController() {
         winnerMarkElement.innerHTML = mark;
         winnerMessageElement.textContent = message;
         winnerDialog.showModal();
+
+        toggleGameControlsVisibility();
     };
+
+    const toggleGameControlsVisibility = () => {
+        gameControlsElement.classList.toggle('hidden');
+    }
 
     const createCellButton = (cell, rowIndex, colIndex) => {
         const cellMark = cell.getMark();
